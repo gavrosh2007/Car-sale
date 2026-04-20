@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>HM&CS | Автомобили с пробегом</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="HM&CS">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#e8491d">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center top;
+            background-attachment: fixed;
+            transition: background-image 0.3s ease;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            z-index: -2;
+        }
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            filter: blur(4px);
+            z-index: -1;
+            transform: scale(1.02);
+        }
+        body.main-bg { background-image: url('bg-main.jpeg'); }
+        body.b2b-bg { background-image: url('bg-b2b.jpeg'); }
+        body.b2c-bg { background-image: url('bg-b2c.jpeg'); }
+        
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        header {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(8px);
+            padding: 0.8rem 1.5rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border: 1px solid rgba(232,73,29,0.3);
+        }
+        .logo h1 {
+            font-size: 1.8rem;
+            color: #3a2a1f;
+            font-weight: bold;
+            letter-spacing: 2px;
+            font-family: 'Courier New', 'American Typewriter', monospace;
+            background: rgba(253, 245, 230, 0.75);
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            display: inline-block;
+            text-shadow: none;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: #e8491d;
+            box-shadow: 0 0 8px rgba(232,73,29,0.5);
+        }
+        .lang-switch {
+            display: flex;
+            gap: 0.6rem;
+        }
+        .lang-btn {
+            background: rgba(0,0,0,0.5);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 30px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+        }
+        .lang-btn.active {
+            background: #e8491d;
+        }
+        .install-area {
+            text-align: center;
+            margin: 1rem 0 2rem;
+        }
+        .install-tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .pwa-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #e8491d;
+        }
+        .pwa-icon-btn img {
+            width: 96px;
+            height: 96px;
+            border-radius: 12px;
+        }
+        .tooltip-text {
+            visibility: hidden;
+            background: #333;
+            color: #fff;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+        .install-tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        .install-note {
+            margin-top: 0.5rem;
+            font-size: 0.7rem;
+            color: #ccc;
+        }
+        .page {
+            display: none;
+            animation: fade 0.3s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fade {
+            from { opacity: 0; transform: translateY(10px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .hero {
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 32px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h2 {
+            font-size: 2.5rem;
+            color: #e8491d;
+            text-shadow: 2px 2px 0 rgba(0,0,0,0.7);
+        }
+        .hero p {
+            color: #f0f0f0;
+            font-size: 1.2rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .sell-btn, .buy-btn {
+            flex: 1;
+            padding: 1rem;
+            font-size: 1.3rem;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+            font-family: 'Courier New', 'American Typewriter', monospace;
+            background: rgba(253, 245, 230, 0.7);
+            color: #3a2a1f;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .sell-btn:hover, .buy-btn:hover {
+            background: rgba(253, 245, 230, 0.9);
+            transform: scale(1.01);
+        }
+        
+        .brands-wrapper {
+            background-image: url('bg-brands.jpeg');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-color: rgba(255,255,255,0.7);
+            border-radius: 32px;
+            padding: 2rem 1rem;
+            margin: 1rem 0;
+        }
+        .brand-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .brand-btn {
+            background: rgba(253, 245, 230, 0.7);
+            border: 1px solid #d4b88c;
+            color: #3a2a1f;
+            padding: 0.7rem 1.3rem;
+            border-radius: 40px;
+            font-family: 'Courier New', 'American Typewriter', monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .brand-btn:hover {
+            background: rgba(253, 245, 230, 0.9);
+            transform: scale(1.02);
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .card {
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 1.5rem;
+            border-left: 4px solid #e8491d;
+            transition: 0.2s;
+        }
+        .card h3 {
+            color: #e8491d;
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+        .card p, .card li {
+            color: #f0f0f0;
+        }
+        .card ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .card li {
+            padding-left: 1.2rem;
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+        .card li::before {
+            content: "•";
+            color: #e8491d;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+        }
+        .btn-contact {
+            display: inline-block;
+            background: #e8491d;
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            margin-top: 1rem;
+            font-weight: bold;
+        }
+        .contacts {
+            background: rgba(0,0,0,0.35);
+            backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: center;
+        }
+        .contacts h3 {
+            color: #e8491d;
+            margin-bottom: 1rem;
+        }
+        .contact-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        .contact-links a {
+            background: rgba(0,0,0,0.5);
+            padding: 0.4rem 1rem;
+            border-radius: 40px;
+            color: #ddd;
+            text-decoration: none;
+        }
+        .contact-links a:hover {
+            background: #e8491d;
+            color: white;
+        }
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.7rem;
+            color: #ccc;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: rgba(253, 245, 230, 0.95);
+            border-radius: 28px;
+            padding: 1.5rem;
+            width: 90%;
+            max-width: 600px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border: 1px solid #d4b88c;
+            color: #3a2a1f;
+            font-family: 'Courier New', 'American Typewriter', monospace;
+        }
+        .modal-content h3 {
+            color: #b05200;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 1.6rem;
+        }
+        .modal-content input, .modal-content select, .modal-content textarea {
+            width: 100%;
+            padding: 0.7rem;
+            margin-bottom: 0.8rem;
+            border-radius: 12px;
+            border: 1px solid #d4b88c;
+            background: rgba(255,255,255,0.9);
+            color: #2a1a0a;
+            font-family: inherit;
+        }
+        .modal-content input::placeholder,
+        .modal-content textarea::placeholder {
+            color: #8a7a6a;
+        }
+        .modal-content button {
+            background: #e8491d;
+            color: white;
+            border: none;
+            padding: 0.7rem;
+            border-radius: 40px;
+            width: 100%;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            font-family: 'Courier New', 'American Typewriter', monospace;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .close-modal {
+            background: rgba(0,0,0,0.7) !important;
+            border: 1px solid #d4b88c !important;
+            color: white !important;
+        }
+        .close-modal:hover {
+            background: rgba(0,0,0,0.9) !important;
+        }
+        .dropzone {
+            border: 2px dashed #d4b88c;
+            border-radius: 20px;
+            padding: 1rem;
+            text-align: center;
+            margin-bottom: 1rem;
+            background: rgba(255,255,255,0.5);
+            cursor: pointer;
+        }
+        .photo-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+        }
+        .photo-preview img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #d4b88c;
+        }
+        
+        @media (max-width: 700px) {
+            .container { padding: 1rem; }
+            .hero h2 { font-size: 1.8rem; }
+            .tab-btn, .lang-btn { font-size: 0.8rem; padding: 0.3rem 0.8rem; }
+            .brand-btn { font-size: 0.8rem; padding: 0.5rem 1rem; }
+            .sell-btn, .buy-btn { font-size: 1rem; padding: 0.8rem; }
+            .pwa-icon-btn img { width: 64px; height: 64px; }
+        }
+    </style>
+</head>
+<body class="main-bg">
+<div class="container">
+    <header>
+        <div class="logo"><h1>HM&CS</h1></div>
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="home">🏠 <span id="tabHome">Главная</span></button>
+            <button class="tab-btn" data-tab="b2b">💼 <span id="tabB2B">B2B</span></button>
+            <button class="tab-btn" data-tab="b2c">👤 <span id="tabB2C">B2C</span></button>
+        </div>
+        <div class="lang-switch">
+            <button class="lang-btn" data-lang="ru">RU</button>
+            <button class="lang-btn" data-lang="en">EN</button>
+            <button class="lang-btn" data-lang="el">EL</button>
+        </div>
+    </header>
+
+    <div class="install-area">
+        <div class="install-tooltip">
+            <button id="pwa-install-icon" class="pwa-icon-btn">
+                <img src="icon-192x192.png" width="96" height="96" alt="Иконка приложения">
+                <span id="pwaBtnText">Установить приложение</span>
+            </button>
+            <span class="tooltip-text" id="pwaTooltip">💡 Нажмите — установите как приложение.</span>
+        </div>
+        <div class="install-note" id="pwaNote">Нажмите на иконку монитора со стрелкой в адресной строке, чтобы установить.</div>
+    </div>
+
+    <div id="homePage" class="page active">
+        <div class="hero">
+            <h2 id="homeTitle">Автомобили с пробегом</h2>
+            <p id="homeSub">Надёжные машины для бизнеса и частных лиц</p>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="sell-btn" id="sellBtn">📝 Разместить объявление</button>
+            <button class="buy-btn" id="buyBtn">🔍 Подобрать авто</button>
+        </div>
+        
+        <div class="brands-wrapper">
+            <div class="brand-grid" id="brandButtonsContainer"></div>
+        </div>
+        <div class="cards-grid" id="advantagesGrid"></div>
+    </div>
+
+    <div id="b2bPage" class="page">
+        <div class="hero">
+            <h2 id="b2bTitle">Продажи бизнесу</h2>
+            <p id="b2bSub">Специальные условия для компаний</p>
+        </div>
+        <div class="cards-grid" id="b2bGrid"></div>
+    </div>
+
+    <div id="b2cPage" class="page">
+        <div class="hero">
+            <h2 id="b2cTitle">Продажи частным лицам</h2>
+            <p id="b2cSub">Выгодные условия для покупателей</p>
+        </div>
+        <div class="cards-grid" id="b2cGrid"></div>
+    </div>
+
+    <div class="contacts">
+        <h3 id="contactsTitle">📞 Контакты</h3>
+        <div class="contact-links">
+            <a href="tel:+35799453575">📞 +357 99 453575</a>
+            <a href="tel:+35799486511">📞 +357 99 486511</a>
+            <a href="https://wa.me/35799453575" target="_blank">💬 WhatsApp</a>
+            <a href="mailto:gavrosh2007@gmail.com">✉️ Email</a>
+            <a href="https://t.me/faufautua" target="_blank">📱 Telegram</a>
+        </div>
+    </div>
+    <footer><span id="footerText">© 2025 HM&CS | Автомобили с пробегом</span></footer>
+</div>
+
+<!-- Модалка продажи -->
+<div id="sellModal" class="modal">
+    <div class="modal-content">
+        <h3 id="sellModalTitle">📝 Разместить объявление</h3>
+        <select id="sellBrand"><option value="">Выберите марку</option></select>
+        <input type="text" id="sellYear" placeholder="Год выпуска">
+        <input type="text" id="sellMileage" placeholder="Пробег (км)">
+        <select id="sellCondition">
+            <option value="excellent">Отличное</option>
+            <option value="good">Хорошее</option>
+            <option value="repair">Требует ремонта</option>
+        </select>
+        <input type="text" id="sellPrice" placeholder="Цена (€)">
+        <input type="text" id="sellContact" placeholder="Контакт (телефон / email)">
+        <div id="sellDropzone" class="dropzone">
+            <p>📸 Перетащите фото или нажмите для выбора</p>
+            <input type="file" id="sellFileInput" accept="image/*" multiple style="display:none;">
+        </div>
+        <div id="sellPhotoPreview" class="photo-preview"></div>
+        <button id="submitSell">✅ Отправить объявление</button>
+        <button class="close-modal">✖ Закрыть</button>
+    </div>
+</div>
+
+<!-- Модалка покупки -->
+<div id="buyModal" class="modal">
+    <div class="modal-content">
+        <h3 id="buyModalTitle">🔍 Подобрать авто</h3>
+        <select id="buyBrand"><option value="">Выберите марку</option></select>
+        <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="buyYearFrom" placeholder="Год от">
+            <input type="text" id="buyYearTo" placeholder="Год до">
+        </div>
+        <input type="text" id="buyMaxMileage" placeholder="Макс. пробег (км)">
+        <div style="margin-bottom: 0.8rem;">
+            <label id="conditionLabel">Состояние:</label><br>
+            <label><input type="checkbox" value="excellent" id="condExcellent"> <span id="condExcellentText">Отличное</span></label>
+            <label><input type="checkbox" value="good" id="condGood"> <span id="condGoodText">Хорошее</span></label>
+            <label><input type="checkbox" value="repair" id="condRepair"> <span id="condRepairText">Требует ремонта</span></label>
+        </div>
+        <input type="text" id="buyBudget" placeholder="Бюджет (€)">
+        <input type="text" id="buyName" placeholder="Ваше имя">
+        <input type="text" id="buyPhone" placeholder="Телефон">
+        <button id="submitBuy">📩 Отправить заявку</button>
+        <button class="close-modal">✖ Закрыть</button>
+    </div>
+</div>
+
+<script>
+    const brandsList = ["NISSAN","HONDA","MAZDA","TOYOTA","LEXUS","SUZUKI","MERCEDES","BMW","AUDI","JEEP","MINI","LAND ROVER","BENTLEY","ROLLS-ROYCE","7-SEATER MINIBUS","ДРУГАЯ"];
+    
+    const texts = {
+        ru: {
+            sellTitle: "📝 Разместить объявление",
+            buyTitle: "🔍 Подобрать авто",
+            sellBtn: "📝 Разместить объявление",
+            buyBtn: "🔍 Подобрать авто",
+            sellSuccess: "✅ Объявление отправлено! Мы свяжемся с вами.",
+            buySuccess: "✅ Заявка отправлена! Мы подберём авто.",
+            emptyFields: "Заполните обязательные поля",
+            selectBrand: "Выберите марку",
+            conditionExcellent: "Отличное",
+            conditionGood: "Хорошее",
+            conditionRepair: "Требует ремонта",
+            conditionLabel: "Состояние:",
+            yearPlaceholder: "Год выпуска",
+            mileagePlaceholder: "Пробег (км)",
+            pricePlaceholder: "Цена (€)",
+            contactPlaceholder: "Контакт (телефон / email)",
+            yearFromPlaceholder: "Год от",
+            yearToPlaceholder: "Год до",
+            maxMileagePlaceholder: "Макс. пробег (км)",
+            budgetPlaceholder: "Бюджет (€)",
+            namePlaceholder: "Ваше имя",
+            phonePlaceholder: "Телефон",
+            dropzoneText: "📸 Перетащите фото или нажмите для выбора",
+            submitSell: "✅ Отправить объявление",
+            submitBuy: "📩 Отправить заявку",
+            closeText: "✖ Закрыть"
+        },
+        en: {
+            sellTitle: "📝 Post an ad",
+            buyTitle: "🔍 Find a car",
+            sellBtn: "📝 Post an ad",
+            buyBtn: "🔍 Find a car",
+            sellSuccess: "✅ Ad posted! We will contact you.",
+            buySuccess: "✅ Request sent! We will find a car.",
+            emptyFields: "Please fill required fields",
+            selectBrand: "Select brand",
+            conditionExcellent: "Excellent",
+            conditionGood: "Good",
+            conditionRepair: "Needs repair",
+            conditionLabel: "Condition:",
+            yearPlaceholder: "Year",
+            mileagePlaceholder: "Mileage (km)",
+            pricePlaceholder: "Price (€)",
+            contactPlaceholder: "Contact (phone / email)",
+            yearFromPlaceholder: "Year from",
+            yearToPlaceholder: "Year to",
+            maxMileagePlaceholder: "Max mileage (km)",
+            budgetPlaceholder: "Budget (€)",
+            namePlaceholder: "Your name",
+            phonePlaceholder: "Phone",
+            dropzoneText: "📸 Drag & drop photos or click to select",
+            submitSell: "✅ Submit ad",
+            submitBuy: "📩 Send request",
+            closeText: "✖ Close"
+        },
+        el: {
+            sellTitle: "📝 Δημοσίευση αγγελίας",
+            buyTitle: "🔍 Εύρεση αυτοκινήτου",
+            sellBtn: "📝 Δημοσίευση αγγελίας",
+            buyBtn: "🔍 Εύρεση αυτοκινήτου",
+            sellSuccess: "✅ Η αγγελία δημοσιεύθηκε! Θα επικοινωνήσουμε.",
+            buySuccess: "✅ Το αίτημα στάλθηκε! Θα βρούμε αυτοκίνητο.",
+            emptyFields: "Συμπληρώστε τα υποχρεωτικά πεδία",
+            selectBrand: "Επιλέξτε μάρκα",
+            conditionExcellent: "Άριστη",
+            conditionGood: "Καλή",
+            conditionRepair: "Χρειάζεται επισκευή",
+            conditionLabel: "Κατάσταση:",
+            yearPlaceholder: "Έτος",
+            mileagePlaceholder: "Χιλιόμετρα (χλμ)",
+            pricePlaceholder: "Τιμή (€)",
+            contactPlaceholder: "Επικοινωνία (τηλέφωνο / email)",
+            yearFromPlaceholder: "Από έτος",
+            yearToPlaceholder: "Έως έτος",
+            maxMileagePlaceholder: "Μέγιστα χλμ",
+            budgetPlaceholder: "Προϋπολογισμός (€)",
+            namePlaceholder: "Το όνομά σας",
+            phonePlaceholder: "Τηλέφωνο",
+            dropzoneText: "📸 Σύρετε φωτογραφίες ή κάντε κλικ για επιλογή",
+            submitSell: "✅ Υποβολή αγγελίας",
+            submitBuy: "📩 Αποστολή αιτήματος",
+            closeText: "✖ Κλείσιμο"
+        }
+    };
+    
+    let currentLang = 'ru';
+    let currentTab = 'home';
+    let activeModal = null;
+    let deferredPrompt;
+    
+    const advantagesData = {
+        ru: [
+            { title: "Гарантия на все авто", items: ["Полная диагностика", "Проверенная история", "Честное описание"] },
+            { title: "Финансовая выгода", items: ["Цены ниже рынка", "Быстрое оформление", "Прозрачные условия"] },
+            { title: "Подержанные vs Новые", items: ["Нет переплаты", "Минимальная потеря цены", "Заводские дефекты устранены"] }
+        ],
+        en: [
+            { title: "Warranty", items: ["Full diagnostics", "Verified history", "Honest description"] },
+            { title: "Financial benefits", items: ["Lower prices", "Quick paperwork", "Transparent terms"] },
+            { title: "Used vs New", items: ["No overpayment", "Minimal depreciation", "Factory defects fixed"] }
+        ],
+        el: [
+            { title: "Εγγύηση", items: ["Πλήρης διάγνωση", "Επαληθευμένο ιστορικό", "Ειλικρινής περιγραφή"] },
+            { title: "Οικονομικά οφέλη", items: ["Χαμηλότερες τιμές", "Γρήγορη γραφειοκρατία", "Διαφανείς όροι"] },
+            { title: "Μεταχειρισμένα vs Νέα", items: ["Χωρίς υπερπληρωμή", "Ελάχιστη απόσβεση", "Εργοστασιακά ελαττώματα"] }
+        ]
+    };
+    
+    const b2bData = {
+        ru: [
+            { title: "Для риелторов", desc: "Добавьте авто к сделке с недвижимостью", items: ["Авто как бонус", "Готовые материалы", "Дополнительный доход"] },
+            { title: "Для HR-компаний", desc: "Решите транспортные вопросы сотрудников", items: ["Пакетные решения", "Спеццены от 5 машин", "Полное сопровождение"] }
+        ],
+        en: [
+            { title: "For Realtors", desc: "Add a car to real estate deal", items: ["Car as bonus", "Ready materials", "Extra income"] },
+            { title: "For HR", desc: "Solve employee transport issues", items: ["Package solutions", "Special prices", "Full support"] }
+        ],
+        el: [
+            { title: "Για Μεσίτες", desc: "Προσθήκη αυτοκινήτου", items: ["Αυτοκίνητο ως μπόνους", "Έτοιμο υλικό", "Πρόσθετο εισόδημα"] },
+            { title: "Για HR", desc: "Λύση μεταφορικών", items: ["Ολοκληρωμένες λύσεις", "Ειδικές τιμές", "Πλήρης υποστήριξη"] }
+        ]
+    };
+    
+    const b2cData = {
+        ru: [
+            { title: "Преимущества", items: ["Честные цены", "Помощь с документами", "Тест-драйв", "Обслуживание"] },
+            { title: "Почему мы", items: ["Большой выбор", "Прозрачная история", "Кредитование", "Trade-in"] }
+        ],
+        en: [
+            { title: "Advantages", items: ["Honest prices", "Document help", "Test drive", "Service"] },
+            { title: "Why us", items: ["Wide choice", "Clear history", "Financing", "Trade-in"] }
+        ],
+        el: [
+            { title: "Πλεονεκτήματα", items: ["Τίμιες τιμές", "Βοήθεια εγγράφων", "Δοκιμή", "Σέρβις"] },
+            { title: "Γιατί εμάς", items: ["Μεγάλη επιλογή", "Διαφανές ιστορικό", "Χρηματοδότηση", "Trade-in"] }
+        ]
+    };
+    
+    function fillBrandSelects() {
+        const sellSelect = document.getElementById('sellBrand');
+        const buySelect = document.getElementById('buyBrand');
+        const options = brandsList.map(b => `<option value="${b}">${b}</option>`).join('');
+        if (sellSelect) sellSelect.innerHTML = `<option value="">${texts[currentLang].selectBrand}</option>` + options;
+        if (buySelect) buySelect.innerHTML = `<option value="">${texts[currentLang].selectBrand}</option>` + options;
+    }
+    
+    function updateModalTranslations() {
+        const t = texts[currentLang];
+        // Модалка продажи
+        document.getElementById('sellModalTitle').innerText = t.sellTitle;
+        document.getElementById('sellYear').placeholder = t.yearPlaceholder;
+        document.getElementById('sellMileage').placeholder = t.mileagePlaceholder;
+        document.getElementById('sellPrice').placeholder = t.pricePlaceholder;
+        document.getElementById('sellContact').placeholder = t.contactPlaceholder;
+        document.querySelector('#sellModal .dropzone p').innerText = t.dropzoneText;
+        document.getElementById('submitSell').innerText = t.submitSell;
+        // Модалка покупки
+        document.getElementById('buyModalTitle').innerText = t.buyTitle;
+        document.getElementById('buyYearFrom').placeholder = t.yearFromPlaceholder;
+        document.getElementById('buyYearTo').placeholder = t.yearToPlaceholder;
+        document.getElementById('buyMaxMileage').placeholder = t.maxMileagePlaceholder;
+        document.getElementById('buyBudget').placeholder = t.budgetPlaceholder;
+        document.getElementById('buyName').placeholder = t.namePlaceholder;
+        document.getElementById('buyPhone').placeholder = t.phonePlaceholder;
+        document.getElementById('conditionLabel').innerText = t.conditionLabel;
+        document.getElementById('condExcellentText').innerText = t.conditionExcellent;
+        document.getElementById('condGoodText').innerText = t.conditionGood;
+        document.getElementById('condRepairText').innerText = t.conditionRepair;
+        document.getElementById('submitBuy').innerText = t.submitBuy;
+        // Выпадающие списки
+        fillBrandSelects();
+        // Опции состояния в продаже
+        const sellCondition = document.getElementById('sellCondition');
+        if (sellCondition) {
+            sellCondition.options[0].text = t.conditionExcellent;
+            sellCondition.options[1].text = t.conditionGood;
+            sellCondition.options[2].text = t.conditionRepair;
+        }
+        // Закрыть везде
+        document.querySelectorAll('.close-modal').forEach(btn => btn.innerText = t.closeText);
+    }
+    
+    function renderHome() {
+        const adv = advantagesData[currentLang];
+        const grid = document.getElementById('advantagesGrid');
+        grid.innerHTML = adv.map(a => `
+            <div class="card">
+                <h3>${a.title}</h3>
+                <ul>${a.items.map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+        `).join('');
+        
+        const brandContainer = document.getElementById('brandButtonsContainer');
+        brandContainer.innerHTML = brandsList.map(b => `<button class="brand-btn" data-brand="${b}">${b}</button>`).join('');
+        document.querySelectorAll('.brand-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const brand = btn.getAttribute('data-brand');
+                if (activeModal === 'sell') {
+                    const sel = document.getElementById('sellBrand');
+                    if (sel) sel.value = brand;
+                } else if (activeModal === 'buy') {
+                    const sel = document.getElementById('buyBrand');
+                    if (sel) sel.value = brand;
+                } else {
+                    alert(texts[currentLang].emptyFields === "Заполните обязательные поля" ? "Сначала выберите: Разместить объявление или Подобрать авто" : "First choose: Post an ad or Find a car");
+                }
+            });
+        });
+    }
+    
+    function renderB2B() {
+        const data = b2bData[currentLang];
+        const grid = document.getElementById('b2bGrid');
+        grid.innerHTML = data.map(o => `
+            <div class="card">
+                <h3>${o.title}</h3>
+                <p>${o.desc}</p>
+                <ul>${o.items.map(i => `<li>${i}</li>`).join('')}</ul>
+                <a href="mailto:gavrosh2007@gmail.com" class="btn-contact">${currentLang === 'ru' ? 'Связаться' : (currentLang === 'en' ? 'Contact' : 'Επικοινωνία')}</a>
+            </div>
+        `).join('');
+    }
+    
+    function renderB2C() {
+        const data = b2cData[currentLang];
+        const grid = document.getElementById('b2cGrid');
+        grid.innerHTML = data.map(o => `
+            <div class="card">
+                <h3>${o.title}</h3>
+                <ul>${o.items.map(i => `<li>${i}</li>`).join('')}</ul>
+            </div>
+        `).join('');
+    }
+    
+    function updateBodyBackground() {
+        document.body.classList.remove('main-bg', 'b2b-bg', 'b2c-bg');
+        if (currentTab === 'home') document.body.classList.add('main-bg');
+        else if (currentTab === 'b2b') document.body.classList.add('b2b-bg');
+        else if (currentTab === 'b2c') document.body.classList.add('b2c-bg');
+    }
+    
+    function renderAll() {
+        const t = texts[currentLang];
+        document.getElementById('tabHome').innerText = currentLang === 'ru' ? 'Главная' : (currentLang === 'en' ? 'Home' : 'Αρχική');
+        document.getElementById('tabB2B').innerText = 'B2B';
+        document.getElementById('tabB2C').innerText = 'B2C';
+        document.getElementById('pwaBtnText').innerText = currentLang === 'ru' ? 'Установить' : (currentLang === 'en' ? 'Install' : 'Εγκατάσταση');
+        document.getElementById('homeTitle').innerText = currentLang === 'ru' ? 'Автомобили с пробегом' : (currentLang === 'en' ? 'Pre-Owned Cars' : 'Μεταχειρισμένα Αυτοκίνητα');
+        document.getElementById('homeSub').innerText = currentLang === 'ru' ? 'Надёжные машины для бизнеса и частных лиц' : (currentLang === 'en' ? 'Reliable cars for business and individuals' : 'Αξιόπιστα αυτοκίνητα');
+        document.getElementById('b2bTitle').innerText = currentLang === 'ru' ? 'Продажи бизнесу' : (currentLang === 'en' ? 'Business Sales' : 'Πωλήσεις σε Επιχειρήσεις');
+        document.getElementById('b2bSub').innerText = currentLang === 'ru' ? 'Специальные условия для компаний' : (currentLang === 'en' ? 'Special conditions for companies' : 'Ειδικές συνθήκες για εταιρείες');
+        document.getElementById('b2cTitle').innerText = currentLang === 'ru' ? 'Продажи частным лицам' : (currentLang === 'en' ? 'Private Sales' : 'Πωλήσεις σε Ιδιώτες');
+        document.getElementById('b2cSub').innerText = currentLang === 'ru' ? 'Выгодные условия для покупателей' : (currentLang === 'en' ? 'Favorable terms for buyers' : 'Ευνοϊκοί όροι για αγοραστές');
+        document.getElementById('contactsTitle').innerHTML = "📞 " + (currentLang === 'ru' ? 'Контакты' : (currentLang === 'en' ? 'Contacts' : 'Επικοινωνία'));
+        document.getElementById('footerText').innerText = `© 2025 HM&CS | ${currentLang === 'ru' ? 'Автомобили с пробегом' : (currentLang === 'en' ? 'Pre-Owned Cars' : 'Μεταχειρισμένα Αυτοκίνητα')}`;
+        
+        document.getElementById('sellBtn').innerText = t.sellBtn;
+        document.getElementById('buyBtn').innerText = t.buyBtn;
+        
+        updateModalTranslations();
+        renderHome();
+        renderB2B();
+        renderB2C();
+        updateBodyBackground();
+    }
+    
+    function setLanguage(lang) {
+        currentLang = lang;
+        localStorage.setItem('auto_lang', lang);
+        renderAll();
+        document.querySelectorAll('.lang-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.lang === lang);
+        });
+    }
+    
+    function switchTab(tab) {
+        currentTab = tab;
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(tab + 'Page').classList.add('active');
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.tab === tab);
+        });
+        updateBodyBackground();
+    }
+    
+    let sellFiles = [];
+    const sellDropzone = document.getElementById('sellDropzone');
+    const sellFileInput = document.getElementById('sellFileInput');
+    const sellPreview = document.getElementById('sellPhotoPreview');
+    
+    if (sellDropzone) {
+        sellDropzone.addEventListener('click', () => sellFileInput.click());
+        sellDropzone.addEventListener('dragover', (e) => { e.preventDefault(); sellDropzone.style.background = 'rgba(255,255,200,0.3)'; });
+        sellDropzone.addEventListener('dragleave', () => sellDropzone.style.background = '');
+        sellDropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            sellDropzone.style.background = '';
+            const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+            if (files.length) addSellFiles(files);
+        });
+        sellFileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) addSellFiles(Array.from(e.target.files));
+        });
+    }
+    
+    function addSellFiles(files) {
+        sellFiles = [...sellFiles, ...files];
+        updateSellPreview();
+    }
+    
+    function updateSellPreview() {
+        if (!sellPreview) return;
+        sellPreview.innerHTML = '';
+        sellFiles.forEach((file, idx) => {
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const img = document.createElement('img');
+                img.src = ev.target.result;
+                img.style.cursor = 'pointer';
+                img.title = 'Нажмите для удаления';
+                img.onclick = () => { sellFiles.splice(idx, 1); updateSellPreview(); };
+                sellPreview.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+    
+    document.getElementById('submitSell')?.addEventListener('click', () => {
+        const brand = document.getElementById('sellBrand').value;
+        const year = document.getElementById('sellYear').value.trim();
+        const mileage = document.getElementById('sellMileage').value.trim();
+        const price = document.getElementById('sellPrice').value.trim();
+        const contact = document.getElementById('sellContact').value.trim();
+        
+        if (!brand || !year || !mileage || !price || !contact) {
+            alert(texts[currentLang].emptyFields);
+            return;
+        }
+        alert(texts[currentLang].sellSuccess);
+        document.getElementById('sellModal').classList.remove('active');
+        activeModal = null;
+        document.getElementById('sellBrand').value = '';
+        document.getElementById('sellYear').value = '';
+        document.getElementById('sellMileage').value = '';
+        document.getElementById('sellPrice').value = '';
+        document.getElementById('sellContact').value = '';
+        sellFiles = [];
+        updateSellPreview();
+        if (sellFileInput) sellFileInput.value = '';
+    });
+    
+    document.getElementById('submitBuy')?.addEventListener('click', () => {
+        const name = document.getElementById('buyName').value.trim();
+        const phone = document.getElementById('buyPhone').value.trim();
+        if (!name || !phone) {
+            alert(texts[currentLang].emptyFields);
+            return;
+        }
+        alert(texts[currentLang].buySuccess);
+        document.getElementById('buyModal').classList.remove('active');
+        activeModal = null;
+        document.getElementById('buyBrand').value = '';
+        document.getElementById('buyYearFrom').value = '';
+        document.getElementById('buyYearTo').value = '';
+        document.getElementById('buyMaxMileage').value = '';
+        document.querySelectorAll('#buyModal input[type="checkbox"]').forEach(cb => cb.checked = false);
+        document.getElementById('buyBudget').value = '';
+        document.getElementById('buyName').value = '';
+        document.getElementById('buyPhone').value = '';
+    });
+    
+    document.getElementById('sellBtn')?.addEventListener('click', () => {
+        activeModal = 'sell';
+        document.getElementById('sellModal').classList.add('active');
+    });
+    document.getElementById('buyBtn')?.addEventListener('click', () => {
+        activeModal = 'buy';
+        document.getElementById('buyModal').classList.add('active');
+    });
+    
+    document.querySelectorAll('.close-modal').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('sellModal').classList.remove('active');
+            document.getElementById('buyModal').classList.remove('active');
+            activeModal = null;
+        });
+    });
+    window.addEventListener('click', (e) => {
+        if (e.target === document.getElementById('sellModal')) {
+            document.getElementById('sellModal').classList.remove('active');
+            activeModal = null;
+        }
+        if (e.target === document.getElementById('buyModal')) {
+            document.getElementById('buyModal').classList.remove('active');
+            activeModal = null;
+        }
+    });
+    
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; });
+    document.getElementById('pwa-install-icon').addEventListener('click', async () => {
+        if (deferredPrompt) { deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt = null; }
+        else alert(currentLang === 'ru' ? 'Нажмите на иконку установки в адресной строке' : 'Click the install icon in the address bar');
+    });
+    
+    const savedLang = localStorage.getItem('auto_lang');
+    if (savedLang && texts[savedLang]) setLanguage(savedLang);
+    else setLanguage('ru');
+    
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+    });
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+    });
+    
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
+    }
+</script>
+</body>
+</html>
