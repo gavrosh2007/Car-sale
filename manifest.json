@@ -1,6 +1,6 @@
 {
-  "name": "XXXX Cars",
-  "short_name": "AutoSales",
+  "name": "HM&CS Car Sales",
+  "short_name": "HM&CS",
   "start_url": "/Car-Sales-PWA/index.html",
   "scope": "/Car-Sales-PWA/",
   "display": "standalone",
