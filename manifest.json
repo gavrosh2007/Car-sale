@@ -1,24 +1,15 @@
+// HM&CS (Car-sale)
 {
   "name": "HM&CS Car Sales",
   "short_name": "HM&CS",
-  "start_url": "/Car-Sales-PWA/index.html",
-  "scope": "/Car-Sales-PWA/",
+  "start_url": "/Car-sale/index.html",
+  "scope": "/Car-sale/",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "theme_color": "#e8491d",
   "background_color": "#ffffff",
   "icons": [
-    {
-      "src": "/Car-Sales-PWA/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "/Car-Sales-PWA/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
-    }
+    {"src": "icon-192x192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icon-512x512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"}
   ]
 }
