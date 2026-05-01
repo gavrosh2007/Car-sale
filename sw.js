@@ -1,7 +1,6 @@
-// Определяем базовый путь динамически — из местоположения самого sw.js
 const base = (() => {
   const path = self.location.pathname.split('/');
-  path.pop(); // удаляем 'sw.js'
+  path.pop();
   return path.join('/') + '/';
 })();
 
@@ -17,25 +16,9 @@ const urlsToCache = [
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .then(() => self.skipWaiting())
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
   );
-});
-
-self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => {
-        if (response) return response;
-        return fetch(event.request).catch(() => {
-          if (event.request.mode === 'navigate') {
-            return caches.match(base + 'offline.html');
-          }
-          return new Response('Offline', { status: 503 });
-        });
-      })
-  );
+  self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
@@ -44,6 +27,25 @@ self.addEventListener('activate', event => {
       keys.map(key => {
         if (key !== CACHE_NAME) return caches.delete(key);
       })
-    )).then(() => self.clients.claim())
+    ))
   );
+  self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match(event.request).then(response => {
+          return response || caches.match(base + 'offline.html');
+        });
+      })
+    );
+  } else {
+    event.respondWith(
+      caches.match(event.request).then(response => {
+        return response || fetch(event.request);
+      })
+    );
+  }
 });
