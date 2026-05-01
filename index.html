@@ -979,7 +979,7 @@
     });
     
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
+        navigator.serviceWorker.register('sw.js', { scope: './' }).catch(err => console.warn('SW error:', err));
     }
 </script>
 </body>
