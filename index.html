@@ -12,429 +12,68 @@
     <meta name="theme-color" content="#e8491d">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            min-height: 100vh;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center top;
-            background-attachment: fixed;
-            transition: background-image 0.3s ease;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: white;
-            z-index: -2;
-        }
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: inherit;
-            filter: blur(4px);
-            z-index: -1;
-            transform: scale(1.02);
-        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; min-height: 100vh; background-size: contain; background-repeat: no-repeat; background-position: center top; background-attachment: fixed; transition: background-image 0.3s ease; position: relative; }
+        body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: white; z-index: -2; }
+        body::after { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: inherit; filter: blur(4px); z-index: -1; transform: scale(1.02); }
         body.main-bg { background-image: url('bg-main.jpeg'); }
         body.b2b-bg { background-image: url('bg-b2b.jpeg'); }
         body.b2c-bg { background-image: url('bg-b2c.jpeg'); }
-        
-        .container {
-            position: relative;
-            z-index: 1;
-            max-width: 1300px;
-            margin: 0 auto;
-            padding: 1.5rem;
-        }
-        header {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(8px);
-            padding: 0.8rem 1.5rem;
-            border-radius: 60px;
-            margin-bottom: 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-            border: 1px solid rgba(232,73,29,0.3);
-        }
-        .logo h1 {
-            font-size: 1.8rem;
-            color: #3a2a1f;
-            font-weight: bold;
-            letter-spacing: 2px;
-            font-family: 'Courier New', 'American Typewriter', monospace;
-            background: rgba(253, 245, 230, 0.75);
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            display: inline-block;
-            text-shadow: none;
-        }
-        .nav-tabs {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-        .tab-btn {
-            background: rgba(0,0,0,0.5);
-            border: none;
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: 0.2s;
-        }
-        .tab-btn.active {
-            background: #e8491d;
-            box-shadow: 0 0 8px rgba(232,73,29,0.5);
-        }
-        .lang-switch {
-            display: flex;
-            gap: 0.6rem;
-        }
-        .lang-btn {
-            background: rgba(0,0,0,0.5);
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 30px;
-            cursor: pointer;
-            color: #fff;
-            font-weight: bold;
-        }
-        .lang-btn.active {
-            background: #e8491d;
-        }
-        .install-area {
-            text-align: center;
-            margin: 1rem 0 2rem;
-        }
-        .install-tooltip {
-            position: relative;
-            display: inline-block;
-        }
-        .pwa-icon-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.3rem;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #e8491d;
-        }
-        .pwa-icon-btn img {
-            width: 96px;
-            height: 96px;
-            border-radius: 12px;
-        }
-        .tooltip-text {
-            visibility: hidden;
-            background: #333;
-            color: #fff;
-            border-radius: 6px;
-            padding: 5px 10px;
-            position: absolute;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.75rem;
-        }
-        .install-tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-        .install-note {
-            margin-top: 0.5rem;
-            font-size: 0.7rem;
-            color: #ccc;
-        }
-        .page {
-            display: none;
-            animation: fade 0.3s ease;
-        }
-        .page.active {
-            display: block;
-        }
-        @keyframes fade {
-            from { opacity: 0; transform: translateY(10px);}
-            to { opacity: 1; transform: translateY(0);}
-        }
-        .hero {
-            background: rgba(0,0,0,0.3);
-            backdrop-filter: blur(10px);
-            border-radius: 32px;
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-        .hero h2 {
-            font-size: 2.5rem;
-            color: #e8491d;
-            text-shadow: 2px 2px 0 rgba(0,0,0,0.7);
-        }
-        .hero p {
-            color: #f0f0f0;
-            font-size: 1.2rem;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        .sell-btn, .buy-btn {
-            flex: 1;
-            padding: 1rem;
-            font-size: 1.3rem;
-            border-radius: 50px;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.2s;
-            font-family: 'Courier New', 'American Typewriter', monospace;
-            background: rgba(253, 245, 230, 0.7);
-            color: #3a2a1f;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .sell-btn:hover, .buy-btn:hover {
-            background: rgba(253, 245, 230, 0.9);
-            transform: scale(1.01);
-        }
-        
-        .brands-wrapper {
-            background-image: url('bg-brands.jpeg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            background-color: rgba(255,255,255,0.7);
-            border-radius: 32px;
-            padding: 2rem 1rem;
-            margin: 1rem 0;
-        }
-        .brand-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        .brand-btn {
-            background: rgba(253, 245, 230, 0.7);
-            border: 1px solid #d4b88c;
-            color: #3a2a1f;
-            padding: 0.7rem 1.3rem;
-            border-radius: 40px;
-            font-family: 'Courier New', 'American Typewriter', monospace;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .brand-btn:hover {
-            background: rgba(253, 245, 230, 0.9);
-            transform: scale(1.02);
-        }
-        
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-        .card {
-            background: rgba(0,0,0,0.35);
-            backdrop-filter: blur(8px);
-            border-radius: 24px;
-            padding: 1.5rem;
-            border-left: 4px solid #e8491d;
-            transition: 0.2s;
-        }
-        .card h3 {
-            color: #e8491d;
-            margin-bottom: 0.8rem;
-            font-size: 1.4rem;
-        }
-        .card p, .card li {
-            color: #f0f0f0;
-        }
-        .card ul {
-            list-style: none;
-            padding-left: 0;
-        }
-        .card li {
-            padding-left: 1.2rem;
-            position: relative;
-            margin-bottom: 0.5rem;
-        }
-        .card li::before {
-            content: "•";
-            color: #e8491d;
-            font-size: 1.2rem;
-            position: absolute;
-            left: 0;
-        }
-        .btn-contact {
-            display: inline-block;
-            background: #e8491d;
-            color: white;
-            padding: 0.5rem 1.2rem;
-            border-radius: 40px;
-            text-decoration: none;
-            margin-top: 1rem;
-            font-weight: bold;
-        }
-        .contacts {
-            background: rgba(0,0,0,0.35);
-            backdrop-filter: blur(8px);
-            border-radius: 28px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            text-align: center;
-        }
-        .contacts h3 {
-            color: #e8491d;
-            margin-bottom: 1rem;
-        }
-        .contact-links {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.8rem;
-        }
-        .contact-links a {
-            background: rgba(0,0,0,0.5);
-            padding: 0.4rem 1rem;
-            border-radius: 40px;
-            color: #ddd;
-            text-decoration: none;
-        }
-        .contact-links a:hover {
-            background: #e8491d;
-            color: white;
-        }
-        footer {
-            text-align: center;
-            margin-top: 2rem;
-            font-size: 0.7rem;
-            color: #ccc;
-        }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal.active {
-            display: flex;
-        }
-        .modal-content {
-            background: rgba(253, 245, 230, 0.95);
-            border-radius: 28px;
-            padding: 1.5rem;
-            width: 90%;
-            max-width: 600px;
-            max-height: 85vh;
-            overflow-y: auto;
-            border: 1px solid #d4b88c;
-            color: #3a2a1f;
-            font-family: 'Courier New', 'American Typewriter', monospace;
-        }
-        .modal-content h3 {
-            color: #b05200;
-            margin-bottom: 1rem;
-            text-align: center;
-            font-size: 1.6rem;
-        }
-        .modal-content input, .modal-content select, .modal-content textarea {
-            width: 100%;
-            padding: 0.7rem;
-            margin-bottom: 0.8rem;
-            border-radius: 12px;
-            border: 1px solid #d4b88c;
-            background: rgba(255,255,255,0.9);
-            color: #2a1a0a;
-            font-family: inherit;
-        }
-        .modal-content input::placeholder,
-        .modal-content textarea::placeholder {
-            color: #8a7a6a;
-        }
-        .modal-content button {
-            background: #e8491d;
-            color: white;
-            border: none;
-            padding: 0.7rem;
-            border-radius: 40px;
-            width: 100%;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            font-family: 'Courier New', 'American Typewriter', monospace;
-            font-weight: bold;
-            font-size: 1rem;
-        }
-        .close-modal {
-            background: rgba(0,0,0,0.7) !important;
-            border: 1px solid #d4b88c !important;
-            color: white !important;
-        }
-        .close-modal:hover {
-            background: rgba(0,0,0,0.9) !important;
-        }
-        .dropzone {
-            border: 2px dashed #d4b88c;
-            border-radius: 20px;
-            padding: 1rem;
-            text-align: center;
-            margin-bottom: 1rem;
-            background: rgba(255,255,255,0.5);
-            cursor: pointer;
-        }
-        .photo-preview {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.8rem;
-        }
-        .photo-preview img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            border: 1px solid #d4b88c;
-        }
-        
-        @media (max-width: 700px) {
-            .container { padding: 1rem; }
-            .hero h2 { font-size: 1.8rem; }
-            .tab-btn, .lang-btn { font-size: 0.8rem; padding: 0.3rem 0.8rem; }
-            .brand-btn { font-size: 0.8rem; padding: 0.5rem 1rem; }
-            .sell-btn, .buy-btn { font-size: 1rem; padding: 0.8rem; }
-            .pwa-icon-btn img { width: 64px; height: 64px; }
-        }
+        .container { position: relative; z-index: 1; max-width: 1300px; margin: 0 auto; padding: 1.5rem; }
+        header { background: rgba(0,0,0,0.3); backdrop-filter: blur(8px); padding: 0.8rem 1.5rem; border-radius: 60px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; border: 1px solid rgba(232,73,29,0.3); }
+        .logo h1 { font-size: 1.8rem; color: #3a2a1f; font-weight: bold; letter-spacing: 2px; font-family: 'Courier New', 'American Typewriter', monospace; background: rgba(253, 245, 230, 0.75); padding: 0.3rem 1rem; border-radius: 40px; display: inline-block; }
+        .nav-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tab-btn { background: rgba(0,0,0,0.5); border: none; color: white; padding: 0.5rem 1.2rem; border-radius: 40px; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+        .tab-btn.active { background: #e8491d; box-shadow: 0 0 8px rgba(232,73,29,0.5); }
+        .lang-switch { display: flex; gap: 0.6rem; }
+        .lang-btn { background: rgba(0,0,0,0.5); border: none; padding: 0.4rem 0.8rem; border-radius: 30px; cursor: pointer; color: #fff; font-weight: bold; }
+        .lang-btn.active { background: #e8491d; }
+        .install-area { text-align: center; margin: 1rem 0 2rem; }
+        .install-tooltip { position: relative; display: inline-block; }
+        .pwa-icon-btn { background: none; border: none; cursor: pointer; display: inline-flex; flex-direction: column; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: #e8491d; }
+        .pwa-icon-btn img { width: 96px; height: 96px; border-radius: 12px; }
+        .tooltip-text { visibility: hidden; background: #333; color: #fff; border-radius: 6px; padding: 5px 10px; position: absolute; bottom: 125%; left: 50%; transform: translateX(-50%); white-space: nowrap; opacity: 0; transition: opacity 0.3s; font-size: 0.75rem; }
+        .install-tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+        .install-note { margin-top: 0.5rem; font-size: 0.7rem; color: #ccc; }
+        .page { display: none; animation: fade 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+        .hero { background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); border-radius: 32px; padding: 2rem; text-align: center; margin-bottom: 2rem; }
+        .hero h2 { font-size: 2.5rem; color: #e8491d; text-shadow: 2px 2px 0 rgba(0,0,0,0.7); }
+        .hero p { color: #f0f0f0; font-size: 1.2rem; }
+        .action-buttons { display: flex; gap: 1rem; margin-bottom: 2rem; }
+        .sell-btn, .buy-btn { flex: 1; padding: 1rem; font-size: 1.3rem; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; font-family: 'Courier New', 'American Typewriter', monospace; background: rgba(253, 245, 230, 0.7); color: #3a2a1f; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .sell-btn:hover, .buy-btn:hover { background: rgba(253, 245, 230, 0.9); transform: scale(1.01); }
+        .brands-wrapper { background-image: url('bg-brands.jpeg'); background-size: contain; background-repeat: no-repeat; background-position: center; background-color: rgba(255,255,255,0.7); border-radius: 32px; padding: 2rem 1rem; margin: 1rem 0; }
+        .brand-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+        .brand-btn { background: rgba(253, 245, 230, 0.7); border: 1px solid #d4b88c; color: #3a2a1f; padding: 0.7rem 1.3rem; border-radius: 40px; font-family: 'Courier New', 'American Typewriter', monospace; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .brand-btn:hover { background: rgba(253, 245, 230, 0.9); transform: scale(1.02); }
+        .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0; }
+        .card { background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); border-radius: 24px; padding: 1.5rem; border-left: 4px solid #e8491d; transition: 0.2s; }
+        .card h3 { color: #e8491d; margin-bottom: 0.8rem; font-size: 1.4rem; }
+        .card p, .card li { color: #f0f0f0; }
+        .card ul { list-style: none; padding-left: 0; }
+        .card li { padding-left: 1.2rem; position: relative; margin-bottom: 0.5rem; }
+        .card li::before { content: "•"; color: #e8491d; font-size: 1.2rem; position: absolute; left: 0; }
+        .btn-contact { display: inline-block; background: #e8491d; color: white; padding: 0.5rem 1.2rem; border-radius: 40px; text-decoration: none; margin-top: 1rem; font-weight: bold; }
+        .contacts { background: rgba(0,0,0,0.35); backdrop-filter: blur(8px); border-radius: 28px; padding: 1.5rem; margin-top: 2rem; text-align: center; }
+        .contacts h3 { color: #e8491d; margin-bottom: 1rem; }
+        .contact-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.8rem; }
+        .contact-links a { background: rgba(0,0,0,0.5); padding: 0.4rem 1rem; border-radius: 40px; color: #ddd; text-decoration: none; }
+        .contact-links a:hover { background: #e8491d; color: white; }
+        footer { text-align: center; margin-top: 2rem; font-size: 0.7rem; color: #ccc; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 1000; justify-content: center; align-items: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: rgba(253, 245, 230, 0.95); border-radius: 28px; padding: 1.5rem; width: 90%; max-width: 600px; max-height: 85vh; overflow-y: auto; border: 1px solid #d4b88c; color: #3a2a1f; font-family: 'Courier New', 'American Typewriter', monospace; }
+        .modal-content h3 { color: #b05200; margin-bottom: 1rem; text-align: center; font-size: 1.6rem; }
+        .modal-content input, .modal-content select, .modal-content textarea { width: 100%; padding: 0.7rem; margin-bottom: 0.8rem; border-radius: 12px; border: 1px solid #d4b88c; background: rgba(255,255,255,0.9); color: #2a1a0a; font-family: inherit; }
+        .modal-content input::placeholder, .modal-content textarea::placeholder { color: #8a7a6a; }
+        .modal-content button { background: #e8491d; color: white; border: none; padding: 0.7rem; border-radius: 40px; width: 100%; cursor: pointer; margin-top: 0.5rem; font-family: 'Courier New', 'American Typewriter', monospace; font-weight: bold; font-size: 1rem; }
+        .close-modal { background: rgba(0,0,0,0.7) !important; border: 1px solid #d4b88c !important; color: white !important; }
+        .close-modal:hover { background: rgba(0,0,0,0.9) !important; }
+        .dropzone { border: 2px dashed #d4b88c; border-radius: 20px; padding: 1rem; text-align: center; margin-bottom: 1rem; background: rgba(255,255,255,0.5); cursor: pointer; }
+        .photo-preview { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.8rem; }
+        .photo-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid #d4b88c; }
+        @media (max-width: 700px) { .container { padding: 1rem; } .hero h2 { font-size: 1.8rem; } .tab-btn, .lang-btn { font-size: 0.8rem; padding: 0.3rem 0.8rem; } .brand-btn { font-size: 0.8rem; padding: 0.5rem 1rem; } .sell-btn, .buy-btn { font-size: 1rem; padding: 0.8rem; } .pwa-icon-btn img { width: 64px; height: 64px; } }
     </style>
 </head>
 <body class="main-bg">
@@ -469,12 +108,10 @@
             <h2 id="homeTitle">Автомобили с пробегом</h2>
             <p id="homeSub">Надёжные машины для бизнеса и частных лиц</p>
         </div>
-        
         <div class="action-buttons">
             <button class="sell-btn" id="sellBtn">📝 Разместить объявление</button>
             <button class="buy-btn" id="buyBtn">🔍 Подобрать авто</button>
         </div>
-        
         <div class="brands-wrapper">
             <div class="brand-grid" id="brandButtonsContainer"></div>
         </div>
@@ -507,10 +144,42 @@
             <a href="https://t.me/faufautua" target="_blank">📱 Telegram</a>
         </div>
     </div>
-    <footer><span id="footerText">© 2025 HM&CS | Автомобили с пробегом</span></footer>
+
+    <footer>
+        <div id="footer-ru" style="display: block;">
+            <p>© 2025 HM&CS | Автомобили с пробегом</p>
+            <p>
+                <a href="privacy.html">Политика конфиденциальности</a> |
+                <a href="terms.html">Условия использования</a> |
+                <a href="robots.txt" target="_blank">robots.txt</a> |
+                <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+                <a href="humans.txt" target="_blank">humans.txt</a>
+            </p>
+        </div>
+        <div id="footer-en" style="display: none;">
+            <p>© 2025 HM&CS | Pre-Owned Cars</p>
+            <p>
+                <a href="privacy.html">Privacy Policy</a> |
+                <a href="terms.html">Terms of Use</a> |
+                <a href="robots.txt" target="_blank">robots.txt</a> |
+                <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+                <a href="humans.txt" target="_blank">humans.txt</a>
+            </p>
+        </div>
+        <div id="footer-el" style="display: none;">
+            <p>© 2025 HM&CS | Μεταχειρισμένα Αυτοκίνητα</p>
+            <p>
+                <a href="privacy.html">Πολιτική Απορρήτου</a> |
+                <a href="terms.html">Όροι Χρήσης</a> |
+                <a href="robots.txt" target="_blank">robots.txt</a> |
+                <a href="sitemap.xml" target="_blank">sitemap.xml</a> |
+                <a href="humans.txt" target="_blank">humans.txt</a>
+            </p>
+        </div>
+    </footer>
 </div>
 
-<!-- Модалка продажи -->
+<!-- Модалки -->
 <div id="sellModal" class="modal">
     <div class="modal-content">
         <h3 id="sellModalTitle">📝 Разместить объявление</h3>
@@ -534,7 +203,6 @@
     </div>
 </div>
 
-<!-- Модалка покупки -->
 <div id="buyModal" class="modal">
     <div class="modal-content">
         <h3 id="buyModalTitle">🔍 Подобрать авто</h3>
@@ -588,7 +256,21 @@
             dropzoneText: "📸 Перетащите фото или нажмите для выбора",
             submitSell: "✅ Отправить объявление",
             submitBuy: "📩 Отправить заявку",
-            closeText: "✖ Закрыть"
+            closeText: "✖ Закрыть",
+            pwaBtnText: "Установить",
+            pwaTooltip: "💡 Нажмите — установите как приложение.\n• Chrome/Edge: появится диалог.\n• iPhone: Поделиться → На экран «Домой».",
+            pwaNote: "✅ Нажмите на иконку монитора со стрелкой в адресной строке, чтобы установить приложение. На iPhone: Поделиться → На экран «Домой».",
+            homeTitle: "Автомобили с пробегом",
+            homeSub: "Надёжные машины для бизнеса и частных лиц",
+            b2bTitle: "Продажи бизнесу",
+            b2bSub: "Специальные условия для компаний",
+            b2cTitle: "Продажи частным лицам",
+            b2cSub: "Выгодные условия для покупателей",
+            contactsTitle: "📞 Контакты",
+            footerText: "Автомобили с пробегом",
+            tabHome: "Главная",
+            tabB2B: "B2B",
+            tabB2C: "B2C"
         },
         en: {
             sellTitle: "📝 Post an ad",
@@ -616,7 +298,21 @@
             dropzoneText: "📸 Drag & drop photos or click to select",
             submitSell: "✅ Submit ad",
             submitBuy: "📩 Send request",
-            closeText: "✖ Close"
+            closeText: "✖ Close",
+            pwaBtnText: "Install",
+            pwaTooltip: "💡 Click — install as app.\n• Chrome/Edge: dialog appears.\n• iPhone: Share → Add to Home Screen.",
+            pwaNote: "✅ Click the monitor icon with a down arrow in the address bar to install the app. On iPhone: Share → Add to Home Screen.",
+            homeTitle: "Pre-Owned Cars",
+            homeSub: "Reliable cars for business and individuals",
+            b2bTitle: "Business Sales",
+            b2bSub: "Special conditions for companies",
+            b2cTitle: "Private Sales",
+            b2cSub: "Favorable terms for buyers",
+            contactsTitle: "📞 Contacts",
+            footerText: "Pre-Owned Cars",
+            tabHome: "Home",
+            tabB2B: "B2B",
+            tabB2C: "B2C"
         },
         el: {
             sellTitle: "📝 Δημοσίευση αγγελίας",
@@ -644,7 +340,21 @@
             dropzoneText: "📸 Σύρετε φωτογραφίες ή κάντε κλικ για επιλογή",
             submitSell: "✅ Υποβολή αγγελίας",
             submitBuy: "📩 Αποστολή αιτήματος",
-            closeText: "✖ Κλείσιμο"
+            closeText: "✖ Κλείσιμο",
+            pwaBtnText: "Εγκατάσταση",
+            pwaTooltip: "💡 Κάντε κλικ — εγκατάσταση εφαρμογής.\n• Chrome/Edge: εμφανίζεται διάλογος.\n• iPhone: Κοινή χρήση → Προσθήκη στην αρχική οθόνη.",
+            pwaNote: "✅ Κάντε κλικ στο εικονίδιο της οθόνης με το βέλος στη γραμμή διευθύνσεων. Σε iPhone: Κοινή χρήση → Προσθήκη στην αρχική οθόνη.",
+            homeTitle: "Μεταχειρισμένα Αυτοκίνητα",
+            homeSub: "Αξιόπιστα αυτοκίνητα για επιχειρήσεις και ιδιώτες",
+            b2bTitle: "Πωλήσεις σε Επιχειρήσεις",
+            b2bSub: "Ειδικές συνθήκες για εταιρείες",
+            b2cTitle: "Πωλήσεις σε Ιδιώτες",
+            b2cSub: "Ευνοϊκοί όροι για αγοραστές",
+            contactsTitle: "📞 Επικοινωνία",
+            footerText: "Μεταχειρισμένα Αυτοκίνητα",
+            tabHome: "Αρχική",
+            tabB2B: "B2B",
+            tabB2C: "B2C"
         }
     };
     
@@ -711,15 +421,14 @@
     
     function updateModalTranslations() {
         const t = texts[currentLang];
-        // Модалка продажи
         document.getElementById('sellModalTitle').innerText = t.sellTitle;
         document.getElementById('sellYear').placeholder = t.yearPlaceholder;
         document.getElementById('sellMileage').placeholder = t.mileagePlaceholder;
         document.getElementById('sellPrice').placeholder = t.pricePlaceholder;
         document.getElementById('sellContact').placeholder = t.contactPlaceholder;
-        document.querySelector('#sellModal .dropzone p').innerText = t.dropzoneText;
+        const dropzoneP = document.querySelector('#sellModal .dropzone p');
+        if (dropzoneP) dropzoneP.innerText = t.dropzoneText;
         document.getElementById('submitSell').innerText = t.submitSell;
-        // Модалка покупки
         document.getElementById('buyModalTitle').innerText = t.buyTitle;
         document.getElementById('buyYearFrom').placeholder = t.yearFromPlaceholder;
         document.getElementById('buyYearTo').placeholder = t.yearToPlaceholder;
@@ -732,16 +441,13 @@
         document.getElementById('condGoodText').innerText = t.conditionGood;
         document.getElementById('condRepairText').innerText = t.conditionRepair;
         document.getElementById('submitBuy').innerText = t.submitBuy;
-        // Выпадающие списки
         fillBrandSelects();
-        // Опции состояния в продаже
         const sellCondition = document.getElementById('sellCondition');
         if (sellCondition) {
             sellCondition.options[0].text = t.conditionExcellent;
             sellCondition.options[1].text = t.conditionGood;
             sellCondition.options[2].text = t.conditionRepair;
         }
-        // Закрыть везде
         document.querySelectorAll('.close-modal').forEach(btn => btn.innerText = t.closeText);
     }
     
@@ -767,7 +473,7 @@
                     const sel = document.getElementById('buyBrand');
                     if (sel) sel.value = brand;
                 } else {
-                    alert(texts[currentLang].emptyFields === "Заполните обязательные поля" ? "Сначала выберите: Разместить объявление или Подобрать авто" : "First choose: Post an ad or Find a car");
+                    alert(texts[currentLang].emptyFields);
                 }
             });
         });
@@ -806,22 +512,24 @@
     
     function renderAll() {
         const t = texts[currentLang];
-        document.getElementById('tabHome').innerText = currentLang === 'ru' ? 'Главная' : (currentLang === 'en' ? 'Home' : 'Αρχική');
-        document.getElementById('tabB2B').innerText = 'B2B';
-        document.getElementById('tabB2C').innerText = 'B2C';
-        document.getElementById('pwaBtnText').innerText = currentLang === 'ru' ? 'Установить' : (currentLang === 'en' ? 'Install' : 'Εγκατάσταση');
-        document.getElementById('homeTitle').innerText = currentLang === 'ru' ? 'Автомобили с пробегом' : (currentLang === 'en' ? 'Pre-Owned Cars' : 'Μεταχειρισμένα Αυτοκίνητα');
-        document.getElementById('homeSub').innerText = currentLang === 'ru' ? 'Надёжные машины для бизнеса и частных лиц' : (currentLang === 'en' ? 'Reliable cars for business and individuals' : 'Αξιόπιστα αυτοκίνητα');
-        document.getElementById('b2bTitle').innerText = currentLang === 'ru' ? 'Продажи бизнесу' : (currentLang === 'en' ? 'Business Sales' : 'Πωλήσεις σε Επιχειρήσεις');
-        document.getElementById('b2bSub').innerText = currentLang === 'ru' ? 'Специальные условия для компаний' : (currentLang === 'en' ? 'Special conditions for companies' : 'Ειδικές συνθήκες για εταιρείες');
-        document.getElementById('b2cTitle').innerText = currentLang === 'ru' ? 'Продажи частным лицам' : (currentLang === 'en' ? 'Private Sales' : 'Πωλήσεις σε Ιδιώτες');
-        document.getElementById('b2cSub').innerText = currentLang === 'ru' ? 'Выгодные условия для покупателей' : (currentLang === 'en' ? 'Favorable terms for buyers' : 'Ευνοϊκοί όροι για αγοραστές');
-        document.getElementById('contactsTitle').innerHTML = "📞 " + (currentLang === 'ru' ? 'Контакты' : (currentLang === 'en' ? 'Contacts' : 'Επικοινωνία'));
-        document.getElementById('footerText').innerText = `© 2025 HM&CS | ${currentLang === 'ru' ? 'Автомобили с пробегом' : (currentLang === 'en' ? 'Pre-Owned Cars' : 'Μεταχειρισμένα Αυτοκίνητα')}`;
-        
+        document.getElementById('tabHome').innerText = t.tabHome;
+        document.getElementById('tabB2B').innerText = t.tabB2B;
+        document.getElementById('tabB2C').innerText = t.tabB2C;
+        document.getElementById('pwaBtnText').innerText = t.pwaBtnText;
+        document.getElementById('pwaTooltip').innerHTML = t.pwaTooltip;
+        document.getElementById('pwaNote').innerText = t.pwaNote;
+        document.getElementById('homeTitle').innerText = t.homeTitle;
+        document.getElementById('homeSub').innerText = t.homeSub;
+        document.getElementById('b2bTitle').innerText = t.b2bTitle;
+        document.getElementById('b2bSub').innerText = t.b2bSub;
+        document.getElementById('b2cTitle').innerText = t.b2cTitle;
+        document.getElementById('b2cSub').innerText = t.b2cSub;
+        document.getElementById('contactsTitle').innerHTML = t.contactsTitle;
+        document.getElementById('footer-ru').style.display = currentLang === 'ru' ? 'block' : 'none';
+        document.getElementById('footer-en').style.display = currentLang === 'en' ? 'block' : 'none';
+        document.getElementById('footer-el').style.display = currentLang === 'el' ? 'block' : 'none';
         document.getElementById('sellBtn').innerText = t.sellBtn;
         document.getElementById('buyBtn').innerText = t.buyBtn;
-        
         updateModalTranslations();
         renderHome();
         renderB2B();
@@ -882,7 +590,7 @@
                 const img = document.createElement('img');
                 img.src = ev.target.result;
                 img.style.cursor = 'pointer';
-                img.title = 'Нажмите для удаления';
+                img.title = texts[currentLang].closeText;
                 img.onclick = () => { sellFiles.splice(idx, 1); updateSellPreview(); };
                 sellPreview.appendChild(img);
             };
@@ -896,7 +604,6 @@
         const mileage = document.getElementById('sellMileage').value.trim();
         const price = document.getElementById('sellPrice').value.trim();
         const contact = document.getElementById('sellContact').value.trim();
-        
         if (!brand || !year || !mileage || !price || !contact) {
             alert(texts[currentLang].emptyFields);
             return;
